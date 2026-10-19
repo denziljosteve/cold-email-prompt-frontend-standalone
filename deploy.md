@@ -16,9 +16,9 @@ A deployment of this project is:
 
 ```
 coldreach/
-  ├─ index.html     748 lines
-  ├─ styles.css   1,244 lines
-  ├─ app.js       1,993 lines
+  ├─ index.html     789 lines
+  ├─ styles.css   1,749 lines
+  ├─ app.js       2,094 lines
   └─ README.txt  (documentation)
 ```
 

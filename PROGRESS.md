@@ -24,9 +24,9 @@ not call an AI API, does not research anyone, and does not send anything.
 
 | # | Deliverable | Status | Evidence |
 |---|-------------|--------|----------|
-| 1 | `index.html` | ✅ Done | 748 lines; 8 cards, output panel, 6-button toolbar, dialog, toast region, footer, pinned CDNs. |
-| 2 | `styles.css` | ✅ Done | 1,244 lines; token set, dark + light themes, app shell, responsive breakpoints. |
-| 3 | `app.js` | ✅ Done | 1,993 lines; 19 sections, ~80 functions, single IIFE, no global leakage except the test namespace. |
+| 1 | `index.html` | ✅ Done | 789 lines; 8 cards, required-field progress card, output panel with empty state, 6-button toolbar, dialog, toast region, footer, pinned CDNs. |
+| 2 | `styles.css` | ✅ Done | 1,749 lines; token set, dark + light themes, app shell, responsive breakpoints. |
+| 3 | `app.js` | ✅ Done | 2,094 lines; 19 sections, 80 functions, single IIFE, no global leakage except the test namespace. |
 | 4 | `README.txt` | ✅ Done | Usage, cards, output format, privacy, dependencies, troubleshooting, verification summary. |
 | 5 | Six development docs | ✅ Done | `LOG.md`, `PROGRESS.md`, `decision.md`, `flow.md`, `deploy.md`, `PRODUCTIONDEPLOY.md`. |
 
@@ -209,3 +209,70 @@ accessibility audit at 100**, with a broad automated test pass recorded in
 (`file://`) could not be tested with the tools available here, and because
 hardware-level keyboard interaction could not be machine-verified. Both gaps are
 listed as P1 manual tasks above. Nothing has been deployed.
+
+---
+
+## 10. UI enhancement pass — branch `ui-enhanced` (2026-10-19)
+
+**Base.** The request referred to branching from `ui-enchaned`. No such branch
+existed locally or on the remote (the repository only had `main`), so the branch
+**`ui-enhanced`** was created from `main` and the typo corrected. Nothing was
+merged back; the work lives on the branch and was pushed to the remote.
+
+**Scope.** Visual and interaction polish only. `DEFAULT_INSTRUCTIONS`, the JSON
+schema, `buildPluginInput()`, validation rules, extraction behaviour, downloads,
+storage rules and the privacy model are unchanged.
+
+### 10.1 What changed
+
+| Area | Before | After |
+|------|--------|-------|
+| Theme tokens | Flat surfaces, one radius, 13px base | Layered surfaces (`surface` / `-2` / `-3`), 12px/8px radii, two-level shadows, 13.5px base, separate `--cr-accent-hover` per theme |
+| Header | Flat bar, 52px | 60px gradient bar with an accent hairline, glowing logo, "Local only" privacy chip, 34px icon buttons |
+| Cards | Tiny uppercase titles, tight padding | 26px tinted icon, mono step chip (A-H), 13px semibold titles, hover border, 14px body padding |
+| Required state | Only the red summary strip | Progress card (meter + `role="progressbar"`, `aria-valuenow`/`aria-valuetext`, missing-field list) plus per-card state chips on B and D |
+| First load | Red "missing inputs" strip shown immediately | Progress card only; the red strip appears after a Generate attempt |
+| Output panel | Blank textarea | Segmented tabs, status strip, centred three-step empty state, mono textarea, footer metadata |
+| Toolbar | 106px, wrapped to two rows at 1000px | 61px single row at 1000px; primary CTA has a gradient and glow |
+| Drop zones | Plain dashed box | Tinted icon circle, gradient fill, accent hover/drag state |
+| Small screens | Two-up buttons | Primary full width, secondary two-up, static toolbar after the content, no overlap |
+| Contrast | Light-theme accent was the bright cyan | Light theme uses cyan-700/800 for text and a darker primary gradient |
+
+### 10.2 Verification of the enhanced build
+
+All checks were repeated against the changed files, served on fresh ports
+(8150-8154) to defeat Chromium's heuristic CSS cache.
+
+| Check | Result |
+|-------|--------|
+| Clean load, console | 0 messages; 8 cards, 8 step chips, 6 toolbar buttons |
+| Lighthouse — dark | Accessibility **1.00**, Best Practices **1.00**, SEO **1.00**, **0 failing audits** |
+| Lighthouse — light | Accessibility **1.00**, Best Practices **1.00**, SEO **1.00**, **0 failing audits** |
+| Progress meter | 0 of 5 -> 5 of 5; `aria-valuenow` tracks; fill reaches 100%; `is-complete` state applied |
+| Card states | B/D flip "Missing info"/"Resume needed" -> "Ready" with a filled check icon |
+| Empty state | Visible at load; hides on Generate; textarea `tabindex="-1"` while empty and focusable after |
+| Validation timing | No red strip at load; appears after a failed Generate (5 errors / 5 `aria-invalid`, focus moves to the first field); hides once fixed |
+| Generate / modes / reset | Complete Prompt 17,615 chars; JSON parses; reset restores the empty state, 0 of 5 and Complete Prompt |
+| File import | TXT import still extracts, shows the chip and sets progress to 1 of 5 with Card D "Ready" |
+| Desktop geometry (1000x700) | Header 60, workspace 520, toolbar 61 (one row), footer 59; no overlap; input column scrolls internally |
+| Short desktop (1000x560) | No overlap; compact empty state fits exactly (scrollHeight 170 = height 170) |
+| Mobile (390x844) | One 350.67px column, no horizontal overflow, toolbar `static` at the end, page 6,279px |
+| Contrast pairs | Dark: body 16.05, hints 8.87, chips 6.46, badges 4.94, step 6.64, tab 9.29, primary 11.53. Light: body 16.61, chips 6.09, badges 5.13, step 4.50, tab 5.36, primary >= 5.3 after the fix |
+| Static sweep | Still no `eval`, `new Function`, `innerHTML`, `fetch`, `XHR`, `WebSocket`, `sendBeacon`, `console.*`, or inline handlers; `localStorage` still theme-only |
+
+### 10.3 Defects found and fixed in this pass
+
+| # | Defect | Found by | Fix |
+|---|--------|----------|-----|
+| 10 | Light-theme primary button was white on `#0891b2` = **3.68:1**, below AA | Computed-style contrast sweep | Light-theme gradient darkened to `#0e7490 -> #155e75` |
+| 11 | The red "missing inputs" summary appeared on a blank first load, reading like an error before the user typed anything | Geometry probe (a 47px strip appeared unexpectedly) | Gated behind `appState.validationRequested`, set only by a Generate attempt |
+| 12 | The toolbar wrapped to two rows (106px) at 1000px, wasting vertical space | Geometry probe | Button padding 14->13px, toolbar gap 9->8px, primary padding 18->16px; 61px single row |
+| 13 | The output empty state was clipped by 6px at a 560px-tall desktop viewport | Element-metrics probe | Compact variant under `(min-width:992px) and (max-height:640px)` |
+
+### 10.4 Status after this pass
+
+The gate statuses in section 8 are unchanged: the UI work introduced no new
+blocked requirement, and the two P1 manual tasks (`file://`, hardware keyboard)
+still apply. The project remains **PARTIALLY COMPLETE** for those reasons only.
+The branch was committed and pushed; it is **not** deployed, and no GitHub Pages
+site exists.

@@ -19,6 +19,9 @@ empty directory, verified it in a real browser, fixed the eight defects that
 verification surfaced, audited it with Lighthouse, and wrote the documentation.
 Nothing was deployed.
 
+A later session added **Phase 10**, a visual/UX enhancement pass on branch
+`ui-enhanced`; it is recorded below with its own verification and defect list.
+
 ---
 
 ## Phase 0 — Reconnaissance (≈13:18–13:26)
@@ -141,7 +144,36 @@ Nothing was deployed.
 
 ---
 
-## Defects found and fixed in this session
+## Phase 10 — UI enhancement pass (branch `ui-enhanced`)
+
+This phase happened after the first release was pushed, in a second session. Clock
+times were not captured for it, so the steps are listed in order rather than
+timestamped.
+
+| Step | Event |
+|------|-------|
+| 1 | The request asked for a new branch "from `ui-enchaned`". `git branch -a` and `git ls-remote --heads origin` showed only `main` (remote at `d42f339`). No `ui-enchaned` branch existed anywhere. |
+| 2 | Created `ui-enhanced` from `main` rather than inventing a base commit. The spelling was corrected; the branch name is the only intentional deviation from the request. |
+| 3 | Re-read `index.html` (748 lines) and `styles.css` (1,244 lines) to inventory every class and id that `app.js` depends on, so the redesign could not break behaviour. |
+| 4 | Confirmed screenshots were still unavailable ("Screenshot needs a visible tab"), so the design was verified through computed styles, element geometry and Lighthouse instead of visual inspection. |
+| 5 | Markup: added the "Local only" chip, the required-field progress card, A-H step chips inside each card title, state chips on Cards B and D, and an output empty-state wrapper. All existing ids were preserved. |
+| 6 | Rewrote `styles.css` (1,749 lines): layered surface tokens, gradient header with hairline, softer card chrome, segmented output tabs, empty state, elevated toolbar, compact responsive rules. The app-shell mechanics (`100vh`, `overflow:hidden`, internally scrolling columns, `flex:none` cards) were kept intact. |
+| 7 | Added three small behaviours to `app.js`: `updateRequiredProgress()` (called from `updateReadiness()`, so it can never drift), card-state rendering, and empty-state toggling in `renderOutput()`. |
+| 8 | First verification round found the progress fill measured 0px. Investigated `offsetWidth`, inline style and computed style; the tab reported `document.hidden === true`, which pauses CSS transitions at their start value. Forcing `transition:none` produced the correct 511px at 100%. Not an application defect. |
+| 9 | Contrast sweep found the light-theme primary button at **3.68:1**. The audit had previously only run in dark mode. Added `--cr-accent-hover` and a darker light-theme gradient. |
+| 10 | Reloaded on fresh ports to defeat heuristic CSS caching; light theme then measured 5.36:1 for the same element. |
+| 11 | Geometry probe showed a 47px red validation strip on a blank first load and a 106px two-row toolbar at 1000px. Gated the strip behind a Generate attempt and tightened toolbar spacing to one 61px row. |
+| 12 | A 1000x560 probe showed the empty state overflowing its 170px body by 6px. Added a short-viewport variant; re-measured `scrollHeight === height`. |
+| 13 | Re-ran the full behaviour suite: validation, generation, all three modes, staleness, reset, file import, progress/card states. All passed. |
+| 14 | Lighthouse on the final enhanced build: **1.00 / 1.00 / 1.00 with zero failing audits in both dark and light themes**; console empty. |
+| 15 | Re-measured the files with the same byte-level method used in Phase 9 and corrected every line count in the docs. |
+
+**Result.** The branch is committed and pushed. It is not merged into `main` and
+it is not deployed.
+
+---
+
+## Defects found and fixed across both sessions
 
 | # | Defect | Found by | Fix |
 |---|--------|----------|-----|
@@ -154,6 +186,10 @@ Nothing was deployed.
 | 7 | App-shell attempt 1: the body only had `min-height:100%`, so nothing was constrained and the workspace grew to 3,712 px. | Geometry probe. | Added a desktop-only `body { height: 100vh; overflow: hidden }` rule. |
 | 8 | App-shell attempt 2: flex shrinking squashed the input cards, clipping their contents. | Geometry probe (`scrollHeight` collapsed to 509 px). | Added `flex: none` to `.cr-card` and the output panel's fixed rows. |
 | 9 | Documentation drifted from the code: wrong line counts; a log timeline later than the recorded file mtimes; theming described as `data-theme` on `<body>` when it is `data-bs-theme` on `<html>`; an invented `appState` shape; and validation described as live when it only runs on Generate. | Self-review during documentation, checked against the filesystem and the source. | Re-measured counts at byte level; reconciled the timeline against file mtimes and the download JSON's `generatedAt`; read `app.js` and replaced every inaccurate claim, then confirmed the documented JSON structure field-by-field against `buildJson()` output. |
+| 10 | Light-theme primary button was white on `#0891b2` — **3.68:1**, below AA. The original audit only ran in dark mode, so this pre-existed the UI pass. | Computed-style contrast sweep in both themes. | Added a `--cr-accent-hover` token and overrode the light-theme primary gradient to `#0e7490 -> #155e75` (>= 5.3:1). |
+| 11 | The red "missing inputs" summary was visible on a brand-new page, before the user had typed anything or pressed Generate. | Geometry probe: a 47px strip appeared where none was expected. | Added `appState.validationRequested`; the strip is now shown only after a Generate attempt and hides as soon as the fields are valid. |
+| 12 | The bottom toolbar wrapped to two rows (106px tall) at a 1000px viewport, wasting 45px of workspace. | Geometry probe of header/workspace/toolbar/footer rows. | Reduced button padding to 13px, toolbar gap to 8px and primary padding to 16px; the toolbar is now one 61px row at 1000px. |
+| 13 | The output empty state overflowed its container by 6px on a 560px-tall desktop viewport (clipped by `overflow:hidden`). | Element-metrics probe inside a 1000x560 iframe. | Added a `(min-width:992px) and (max-height:640px)` variant that shrinks the icon, tightens gaps and hides the privacy note. |
 
 ---
 

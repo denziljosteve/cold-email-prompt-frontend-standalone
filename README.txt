@@ -257,6 +257,14 @@ Notes:
     header, action toolbar and footer are always visible and the toolbar never
     covers the form or the output. Below 992px it becomes a single flowing column
     with full-width controls and a two-up action area at the end of the content.
+  * The top of the input column carries a REQUIRED FIELDS progress card: a 0-5
+    meter plus the names of the fields still missing. Cards B and D also show a
+    small "Missing info" / "Resume needed" or "Ready" state chip.
+  * Before you generate anything, the output panel shows a short numbered empty
+    state instead of a blank box. The red "missing inputs" summary stays hidden
+    until you actually press Generate, so a fresh page is not covered in errors.
+  * On desktop the new "Local only" chip in the header restates that nothing
+    leaves the tab.
 
 
 ================================================================================

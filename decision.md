@@ -322,3 +322,72 @@ Lighthouse run reporting contrast values that no longer existed on disk and
 briefly looked like a failed fix. A new origin guarantees a cold cache. This is
 a testing-methodology decision, not an application one; the application has no
 caching requirements because it is normally opened from disk or a real host.
+
+## D20 — Branch from `main` when the requested base branch did not exist
+
+**Decision.** The request asked for a branch "from `ui-enchaned`". Neither a
+local nor a remote branch of that (or any similarly spelled) name existed; the
+repository had only `main`. Created **`ui-enhanced`** from `main` and told the
+user, rather than failing, guessing at a commit, or silently inventing a base.
+
+**Why.** Branching from a non-existent ref is not possible, and inventing history
+would be worse than a one-word spelling correction. The branch name is the only
+deviation; it is trivial to rename, and the work is isolated from `main`.
+
+## D21 — Redesign the visual layer, keep the verified mechanics
+
+**Decision.** The UI pass rewrites tokens, card chrome, header/toolbar styling and
+adds presentational elements, but keeps the app-shell layout rules
+(`100vh` + `overflow:hidden` on desktop, internally scrolling columns,
+`flex:none` cards), every element id, and the whole data path.
+
+**Why.** Behaviour had already been verified end-to-end. A structural rewrite
+would have invalidated that evidence for no user benefit. Every new element was
+added alongside the existing ids, and `app.js` only gained three additive
+functions plus one state flag.
+
+**Rejected.** Rebuilding the markup around a new grid; converting the output tabs
+to a new component; replacing Bootstrap. All add risk without changing what the
+user can do.
+
+## D22 — Put progress in the page flow, not in a sticky overlay
+
+**Decision.** The required-field meter is a normal card at the top of the input
+column. It scrolls away with the form.
+
+**Why.** A sticky bar inside the scrolling column would overlap card headers,
+reintroducing exactly the `target-size` class of finding that forced the
+app-shell rework. The meter is most useful before the user starts typing (to show
+what is needed), and the per-card chips plus the output readiness pill carry the
+state after that.
+
+**Accessibility.** The track is a real `role="progressbar"` with
+`aria-valuemin/max/now` and a human `aria-valuetext`; the visible "2 of 5" and
+the missing-field sentence are plain text, so the information survives even if a
+screen reader ignores the bar.
+
+## D23 — Keep the validation summary quiet until Generate
+
+**Decision.** The red "missing or invalid inputs" strip is hidden on first load
+and appears only after a Generate attempt (`appState.validationRequested`).
+
+**Why.** A blank page covered in red reads as "you have done something wrong"
+before the user has done anything. The new progress card already says what is
+missing, in a neutral voice. Field-level errors still appear on Generate exactly
+as before.
+
+**Trade-off.** The strip no longer acts as a live checklist; the progress card
+takes over that job, and it is always accurate because it is recomputed inside
+`updateReadiness()`.
+
+## D24 — Two light-theme accent colours, not one
+
+**Decision.** Light theme uses `#0e7490` for accent text and a `#0e7490 -> #155e75`
+gradient for the primary button; dark theme keeps the bright `#22d3ee`.
+
+**Why.** The bright cyan is right on charcoal and wrong on white: white text on
+`#0891b2` measured **3.68:1**. The original Lighthouse run only exercised dark
+mode, so the failure was invisible until a per-pair sweep was run in both themes.
+Text and fill colours are now tracked separately (`--cr-accent`,
+`--cr-accent-strong`, `--cr-accent-hover`, `--cr-accent-contrast`) so a theme can
+darken one without dulling the other.

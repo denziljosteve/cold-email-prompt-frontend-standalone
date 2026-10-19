@@ -9,7 +9,7 @@ match the implementation in `index.html`, `styles.css` and `app.js`.
 
 ```
                        ┌──────────────────────────────────────────┐
-                       │            index.html  (748 lines)       │
+                       │            index.html  (789 lines)       │
                        │  semantic markup, no inline handlers,    │
                        │  pinned CDN <link>/<script> tags         │
                        └──────────────────────────────────────────┘
@@ -17,7 +17,7 @@ match the implementation in `index.html`, `styles.css` and `app.js`.
                     ┌─────────────────────┴─────────────────────┐
                     │                                           │
         ┌───────────▼────────────┐                 ┌────────────▼────────────┐
-        │   styles.css (1,244)   │                 │    app.js  (1,993)      │
+        │   styles.css (1,749)   │                 │    app.js  (2,094)      │
         │  tokens → themes →     │                 │  single IIFE,           │
         │  app shell → cards →   │                 │  19 numbered sections,  │
         │  output → toolbar →    │                 │  80 functions           │
@@ -103,7 +103,9 @@ appState = {
   outputIsCurrent: false,      // does the shown output match the current form?
   overLimit:     false,        // is the built output past the 32,000-char warning?
   pendingAction: null,         // the confirm-gated action, if any
-  lastFocused:   null          // element to restore focus to after the dialog closes
+  lastFocused:   null,         // element to restore focus to after the dialog closes
+  validationRequested: false   // has the user pressed Generate at least once?
+                               // (gates the red "missing inputs" strip)
 }
 ```
 
@@ -351,7 +353,7 @@ Every destructive action routes through the same modal:
 | 11 | Validation | `isValidEmail`, `isValidUrl`, `validateForm`, `showFieldError`, `clearFieldError`, `clearAllFieldErrors`, `renderValidationErrors` |
 | 12 | Collection | `collectFormData` |
 | 13 | Builders | `buildPluginInput`, `buildPlainText`, `buildJson` |
-| 14 | Output rendering | `renderOutput`, `setOutputMode`, `setReadiness`, `setOutputStatusNotice`, `updateReadiness` |
+| 14 | Output rendering | `renderOutput`, `setOutputMode`, `setReadiness`, `setOutputStatusNotice`, `updateReadiness`, `updateRequiredProgress`, `fieldComplete`, `setCardState` |
 | 15 | Actions | `handleGenerate`, `copyOutput`, `copyToClipboard`, `legacyCopy`, `downloadText`, `downloadJSON`, `triggerDownload`, `assertDownloadable`, `clearOptionalInputs`, `requestReset`, `resetForm`, `handleFormMutation` |
 | 16 | File import | `handleFileUpload`, `detectKind`, `extractTextFromTXT`, `extractTextFromPDF`, `extractTextFromDOCX`, `applyExtractionResult`, `extractInto`, `renderFileChip`, `removeImportedFile`, `bindDropzone`, `submitFileInput`, `setTargetStatus` |
 | 17 | Dialog | `openConfirm`, `closeConfirm`, `confirmPendingAction`, `cancelPendingAction`, `handleDialogKeydown` |

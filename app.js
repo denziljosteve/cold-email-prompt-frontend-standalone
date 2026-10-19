@@ -109,7 +109,11 @@
     outputIsCurrent: false,
     overLimit: false,
     pendingAction: null,
-    lastFocused: null
+    lastFocused: null,
+    // The red "missing inputs" strip is deliberately quiet until the user
+    // actually presses Generate; the progress card already lists what is
+    // outstanding without alarming anyone on first load.
+    validationRequested: false
   };
 
   /** Cached DOM references, populated by cacheElements(). */
@@ -209,6 +213,17 @@
       themeToggleLabel: byId("themeToggleLabel"),
       headerResetBtn: byId("headerResetBtn"),
 
+      // Required-field progress
+      progress: byId("requiredProgress"),
+      progressBar: byId("progressBar"),
+      progressFill: byId("progressFill"),
+      progressCount: byId("progressCount"),
+      progressHint: byId("progressHint"),
+      cardStateB: byId("cardStateB"),
+      cardStateBText: byId("cardStateBText"),
+      cardStateD: byId("cardStateD"),
+      cardStateDText: byId("cardStateDText"),
+
       // Card A
       instructionsText: byId("instructionsText"),
       instructionsCount: byId("instructionsCount"),
@@ -257,6 +272,7 @@
       outputReadinessText: byId("outputReadinessText"),
       outputStatusText: byId("outputStatusText"),
       outputText: byId("outputText"),
+      outputEmpty: byId("outputEmpty"),
       outputWarn: byId("outputWarn"),
       outputModeLabel: byId("outputModeLabel"),
       outputCount: byId("outputCount"),
@@ -675,7 +691,84 @@
     }
   }
 
+  /* ---------------------------------------------------------------------
+     Required-field progress + per-card state
+     --------------------------------------------------------------------- */
+
+  // The five fields that block generation, in the order they appear.
+  var REQUIRED_PROGRESS = [
+    { id: "recipientFullName", label: "contact name" },
+    { id: "recipientTitle", label: "position" },
+    { id: "recipientCompany", label: "company" },
+    { id: "recipientEmail", label: "email", check: isValidEmail },
+    { id: "resumeText", label: "resume" }
+  ];
+
+  function fieldComplete(id, check) {
+    var node = byId(id);
+    var value = node ? String(node.value || "").trim() : "";
+    return value.length > 0 && (!check || check(value));
+  }
+
+  function setCardState(node, textNode, complete, completeText, incompleteText) {
+    if (!node) return;
+    node.setAttribute("data-state", complete ? "complete" : "incomplete");
+    var icon = node.querySelector("i");
+    if (icon) icon.className = "bi " + (complete ? "bi-check-circle-fill" : "bi-circle");
+    if (textNode) textNode.textContent = complete ? completeText : incompleteText;
+  }
+
+  /**
+   * A quiet, always-visible readiness meter: how many of the five blocking
+   * fields are filled, which are still missing, and whether Cards B and D are
+   * complete. It never validates on typing; it only reports what is present.
+   */
+  function updateRequiredProgress() {
+    if (!el.progressCount || !el.progressBar) return;
+
+    var done = 0;
+    var missing = [];
+
+    REQUIRED_PROGRESS.forEach(function (item) {
+      if (fieldComplete(item.id, item.check)) {
+        done += 1;
+      } else {
+        missing.push(item.label);
+      }
+    });
+
+    var total = REQUIRED_PROGRESS.length;
+    var complete = done === total;
+
+    el.progressCount.textContent = done + " of " + total;
+    el.progressFill.style.width = (done / total) * 100 + "%";
+    el.progressBar.setAttribute("aria-valuenow", String(done));
+    el.progressBar.setAttribute(
+      "aria-valuetext",
+      done + " of " + total + " required fields complete"
+    );
+    el.progressHint.textContent = complete
+      ? "All required fields are complete \u2014 ready to generate."
+      : "Still needed: " + missing.join(", ") + ".";
+    if (el.progress) el.progress.classList.toggle("is-complete", complete);
+
+    var recipientComplete =
+      fieldComplete("recipientFullName") &&
+      fieldComplete("recipientTitle") &&
+      fieldComplete("recipientCompany") &&
+      fieldComplete("recipientEmail", isValidEmail);
+    setCardState(el.cardStateB, el.cardStateBText, recipientComplete, "Ready", "Missing info");
+    setCardState(
+      el.cardStateD,
+      el.cardStateDText,
+      fieldComplete("resumeText"),
+      "Ready",
+      "Resume needed"
+    );
+  }
+
   function updateReadiness() {
+    updateRequiredProgress();
     var issues = validateForm(collectFormData());
     var ready = issues.length === 0;
 
@@ -701,7 +794,7 @@
     }
 
     // Validation summary strip
-    if (issues.length && !appState.hasGenerated) {
+    if (issues.length && !appState.hasGenerated && appState.validationRequested) {
       el.validationSummaryText.textContent =
         "Missing or invalid required inputs: " + issues.map(function (i) { return i.label; }).join(", ") + ".";
       el.validationSummary.hidden = false;
@@ -1086,6 +1179,10 @@
       el.outputCount.textContent = fmtCount(0);
       el.outputWarn.hidden = true;
       el.outputWarn.textContent = "";
+      // The friendly empty state covers the textarea, so keep the (invisible)
+      // textarea out of the tab order until there is something to read.
+      if (el.outputEmpty) el.outputEmpty.hidden = false;
+      el.outputText.setAttribute("tabindex", "-1");
       appState.built = null;
       appState.overLimit = false;
       return null;
@@ -1098,6 +1195,8 @@
     el.outputText.value = built.content;
     el.outputText.scrollTop = previousScroll;
     el.outputCount.textContent = fmtCount(built.content.length);
+    if (el.outputEmpty) el.outputEmpty.hidden = true;
+    el.outputText.removeAttribute("tabindex");
 
     // Size warning: shown for the modes that carry the full package.
     if (built.overLimit && appState.outputMode !== "json") {
@@ -1541,6 +1640,7 @@
     var issues = validateForm(formData);
 
     if (issues.length) {
+      appState.validationRequested = true;
       renderValidationErrors(issues);
       updateReadiness();
       showToast(
@@ -1552,6 +1652,7 @@
     }
 
     clearAllFieldErrors();
+    appState.validationRequested = false;
     appState.hasGenerated = true;
     appState.outputIsCurrent = true;
     var built = renderOutput();
@@ -1836,6 +1937,7 @@
     appState.outputIsCurrent = false;
     appState.overLimit = false;
     appState.built = null;
+    appState.validationRequested = false;
     appState.outputMode = "complete";
     el.outputText.value = "";
     el.outputWarn.hidden = true;

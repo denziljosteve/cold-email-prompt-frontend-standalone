@@ -54,6 +54,10 @@
     </div>
 
     <div class="cr-header-actions">
+      <span class="cr-privacy-chip" title="Your resume and form data never leave this browser tab.">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        <span>Local only</span>
+      </span>
       <button type="button" class="cr-icon-btn" id="themeToggle" aria-pressed="false"
               title="Switch to light theme">
         <span id="themeIcon" aria-hidden="true">&#9788;</span>
@@ -70,12 +74,30 @@
   <main class="cr-workspace" id="cr-main">
     <!-- ------------------------- INPUT COLUMN ------------------------- -->
     <form class="cr-inputs" id="crForm" novalidate autocomplete="off" aria-label="ColdReach plugin inputs">
+      <!-- --------------------- REQUIRED-FIELD PROGRESS --------------------- -->
+      <div class="cr-progress" id="requiredProgress">
+        <div class="cr-progress-head">
+          <span class="cr-progress-label" id="progressLabel">
+            <i class="bi bi-list-check" aria-hidden="true"></i> Required fields
+          </span>
+          <span class="cr-progress-count" id="progressCount">0 of 5</span>
+        </div>
+        <div class="cr-progress-track" id="progressBar" role="progressbar"
+             aria-labelledby="progressLabel" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"
+             aria-valuetext="0 of 5 required fields complete">
+          <span class="cr-progress-fill" id="progressFill"></span>
+        </div>
+        <p class="cr-progress-hint" id="progressHint">
+          Still needed: contact name, position, company, email and resume.
+        </p>
+      </div>
+
       <!-- ======================= CARD A — MASTER INSTRUCTIONS ======================= -->
       <section class="cr-card cr-card-master" aria-labelledby="cardATitle">
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardABody" data-collapse="cardABody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span>
-            <span class="cr-card-title" id="cardATitle">A &middot; Master Instructions</span>
+            <span class="cr-card-title" id="cardATitle"><span class="cr-step" aria-hidden="true">A</span>Master Instructions</span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
         </h2>
@@ -120,8 +142,12 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardBBody" data-collapse="cardBBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-person-badge"></i></span>
-            <span class="cr-card-title" id="cardBTitle">B &middot; Recipient &amp; Company</span>
+            <span class="cr-card-title" id="cardBTitle"><span class="cr-step" aria-hidden="true">B</span>Recipient &amp; Company</span>
             <span class="cr-badge-required">4 required</span>
+            <span class="cr-card-state" id="cardStateB" data-state="incomplete">
+              <i class="bi bi-circle" aria-hidden="true"></i>
+              <span id="cardStateBText">Missing info</span>
+            </span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
         </h2>
@@ -197,7 +223,7 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardCBody" data-collapse="cardCBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-person-vcard"></i></span>
-            <span class="cr-card-title" id="cardCTitle">C &middot; Candidate Profile</span>
+            <span class="cr-card-title" id="cardCTitle"><span class="cr-step" aria-hidden="true">C</span>Candidate Profile</span>
             <span class="cr-badge-optional">all optional</span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
@@ -260,8 +286,12 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardDBody" data-collapse="cardDBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
-            <span class="cr-card-title" id="cardDTitle">D &middot; Resume</span>
+            <span class="cr-card-title" id="cardDTitle"><span class="cr-step" aria-hidden="true">D</span>Resume</span>
             <span class="cr-badge-required">required</span>
+            <span class="cr-card-state" id="cardStateD" data-state="incomplete">
+              <i class="bi bi-circle" aria-hidden="true"></i>
+              <span id="cardStateDText">Resume needed</span>
+            </span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
         </h2>
@@ -307,7 +337,7 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardEBody" data-collapse="cardEBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-briefcase"></i></span>
-            <span class="cr-card-title" id="cardETitle">E &middot; Target Opportunity</span>
+            <span class="cr-card-title" id="cardETitle"><span class="cr-step" aria-hidden="true">E</span>Target Opportunity</span>
             <span class="cr-badge-optional">optional</span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
@@ -394,7 +424,7 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardFBody" data-collapse="cardFBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-sliders"></i></span>
-            <span class="cr-card-title" id="cardFTitle">F &middot; Outreach Preferences</span>
+            <span class="cr-card-title" id="cardFTitle"><span class="cr-step" aria-hidden="true">F</span>Outreach Preferences</span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
         </h2>
@@ -513,7 +543,7 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardGBody" data-collapse="cardGBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-search"></i></span>
-            <span class="cr-card-title" id="cardGTitle">G &middot; Research &amp; Personalization</span>
+            <span class="cr-card-title" id="cardGTitle"><span class="cr-step" aria-hidden="true">G</span>Research &amp; Personalization</span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
         </h2>
@@ -588,7 +618,7 @@
         <h2 class="cr-card-heading">
           <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardHBody" data-collapse="cardHBody">
             <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-chat-square-text"></i></span>
-            <span class="cr-card-title" id="cardHTitle">H &middot; Additional Context</span>
+            <span class="cr-card-title" id="cardHTitle"><span class="cr-step" aria-hidden="true">H</span>Additional Context</span>
             <span class="cr-badge-optional">all optional</span>
             <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
           </button>
@@ -657,9 +687,21 @@
       </p>
 
       <label class="cr-sr-only" for="outputText">Generated plugin input, read-only</label>
-      <textarea id="outputText" class="cr-output-textarea" readonly rows="20" spellcheck="false"
-                aria-describedby="outputStatusText outputMeta"
-                placeholder="The assembled plugin input appears here after you press Generate."></textarea>
+      <div class="cr-output-body">
+        <textarea id="outputText" class="cr-output-textarea" readonly rows="20" spellcheck="false"
+                  aria-describedby="outputStatusText outputMeta"
+                  placeholder="The assembled plugin input appears here after you press Generate."></textarea>
+        <div class="cr-output-empty" id="outputEmpty" aria-hidden="true">
+          <span class="cr-output-empty-icon"><i class="bi bi-stars"></i></span>
+          <p class="cr-output-empty-title">Your generated input appears here</p>
+          <ol class="cr-output-empty-steps">
+            <li>Fill the required fields</li>
+            <li>Press <strong>Generate Plugin Input</strong></li>
+            <li>Copy it, or download TXT / JSON</li>
+          </ol>
+          <p class="cr-output-empty-note">Nothing is sent anywhere &mdash; it stays in this tab.</p>
+        </div>
+      </div>
 
       <div class="cr-output-warn cr-status cr-status-warn" id="outputWarn" role="status" hidden></div>
 
