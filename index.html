@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="ColdReach Career Coach — build a structured plugin input for personalized cold emails, networking messages, referral requests and resume-fit assessments. Frontend-only prompt builder; no AI calls, no uploads."
+  />
+  <meta name="color-scheme" content="dark light" />
+  <title>ColdReach Career Coach — Personalized Outreach &amp; Resume Intelligence</title>
+
+  <!-- Bootstrap 5.3.3 (CSS) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons 1.11.3 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    rel="stylesheet"
+  />
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="cr-skip" href="#cr-main">Skip to main content</a>
+
+  <noscript>
+    <div class="cr-noscript" role="alert">
+      ColdReach Career Coach requires JavaScript. Enable JavaScript and reload this page.
+    </div>
+  </noscript>
+
+  <!-- ============================= HEADER ============================= -->
+  <header class="cr-header">
+    <div class="cr-header-brand">
+      <span class="cr-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h10M4 18h7"></path>
+          <circle cx="18" cy="16" r="3"></circle>
+          <path d="M20.5 18.5 23 21"></path>
+        </svg>
+      </span>
+      <div class="cr-header-text">
+        <h1 class="cr-header-title">ColdReach Career Coach</h1>
+        <p class="cr-header-subtitle">Personalized Outreach &amp; Resume Intelligence</p>
+      </div>
+    </div>
+
+    <div class="cr-header-actions">
+      <button type="button" class="cr-icon-btn" id="themeToggle" aria-pressed="false"
+              title="Switch to light theme">
+        <span id="themeIcon" aria-hidden="true">&#9788;</span>
+        <span class="cr-sr-only" id="themeToggleLabel">Switch to light theme</span>
+      </button>
+      <button type="button" class="cr-icon-btn" id="headerResetBtn" title="Reset entire form">
+        <span aria-hidden="true">&#8634;</span>
+        <span class="cr-sr-only">Reset entire form</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================ WORKSPACE ============================ -->
+  <main class="cr-workspace" id="cr-main">
+    <!-- ------------------------- INPUT COLUMN ------------------------- -->
+    <form class="cr-inputs" id="crForm" novalidate autocomplete="off" aria-label="ColdReach plugin inputs">
+      <!-- ======================= CARD A — MASTER INSTRUCTIONS ======================= -->
+      <section class="cr-card cr-card-master" aria-labelledby="cardATitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardABody" data-collapse="cardABody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span>
+            <span class="cr-card-title" id="cardATitle">A &middot; Master Instructions</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardABody">
+          <label class="cr-label" for="instructionsText">Instruction set sent to the downstream coach</label>
+          <textarea
+            id="instructionsText"
+            class="cr-textarea cr-master-textarea"
+            rows="10"
+            spellcheck="false"
+            aria-describedby="instructionsHelp instructionsCount"
+          ></textarea>
+          <p class="cr-hint" id="instructionsHelp">
+            Locked by default: read-only until you unlock it. Excluding it removes it from the payload
+            without deleting your text.
+          </p>
+          <div class="cr-master-footer">
+            <div class="cr-master-toggles">
+              <label class="cr-toggle" for="lockToggle">
+                <input type="checkbox" id="lockToggle" checked />
+                <span class="cr-toggle-track" aria-hidden="true"><span class="cr-toggle-thumb"></span></span>
+                <span class="cr-toggle-label">Locked (<span id="lockStatusText">Locked</span>)</span>
+              </label>
+              <label class="cr-toggle" for="includeInstructions">
+                <input type="checkbox" id="includeInstructions" checked />
+                <span class="cr-toggle-track" aria-hidden="true"><span class="cr-toggle-thumb"></span></span>
+                <span class="cr-toggle-label">Include in output</span>
+              </label>
+            </div>
+            <div class="cr-master-actions">
+              <span class="cr-charcount" id="instructionsCount">0 characters</span>
+              <button type="button" class="btn cr-btn-ghost btn-sm" id="resetInstructionsBtn">
+                Reset to default
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD B — RECIPIENT & COMPANY ======================= -->
+      <section class="cr-card" aria-labelledby="cardBTitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardBBody" data-collapse="cardBBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-person-badge"></i></span>
+            <span class="cr-card-title" id="cardBTitle">B &middot; Recipient &amp; Company</span>
+            <span class="cr-badge-required">4 required</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardBBody">
+          <div class="cr-grid-2">
+            <div class="cr-field" data-field="recipientFullName">
+              <label class="cr-label" for="recipientFullName">
+                Contact full name <span class="cr-req" aria-hidden="true">*</span>
+              </label>
+              <input type="text" id="recipientFullName" class="cr-input" required
+                     aria-required="true" aria-describedby="err-recipientFullName" placeholder="e.g. Priya Raman" />
+              <p class="cr-error" id="err-recipientFullName" hidden></p>
+            </div>
+            <div class="cr-field" data-field="recipientTitle">
+              <label class="cr-label" for="recipientTitle">
+                Current position / title <span class="cr-req" aria-hidden="true">*</span>
+              </label>
+              <input type="text" id="recipientTitle" class="cr-input" required
+                     aria-required="true" aria-describedby="err-recipientTitle" placeholder="e.g. Director of Engineering" />
+              <p class="cr-error" id="err-recipientTitle" hidden></p>
+            </div>
+            <div class="cr-field" data-field="recipientCompany">
+              <label class="cr-label" for="recipientCompany">
+                Company name <span class="cr-req" aria-hidden="true">*</span>
+              </label>
+              <input type="text" id="recipientCompany" class="cr-input" required
+                     aria-required="true" aria-describedby="err-recipientCompany" placeholder="e.g. Northwind Analytics" />
+              <p class="cr-error" id="err-recipientCompany" hidden></p>
+            </div>
+            <div class="cr-field" data-field="recipientEmail">
+              <label class="cr-label" for="recipientEmail">
+                Contact email address <span class="cr-req" aria-hidden="true">*</span>
+              </label>
+              <input type="email" id="recipientEmail" class="cr-input" required inputmode="email"
+                     aria-required="true" aria-describedby="err-recipientEmail" placeholder="name@company.com" />
+              <p class="cr-error" id="err-recipientEmail" hidden></p>
+            </div>
+            <div class="cr-field" data-field="recipientLinkedin">
+              <label class="cr-label" for="recipientLinkedin">
+                LinkedIn profile URL <span class="cr-optional">optional</span>
+              </label>
+              <input type="url" id="recipientLinkedin" class="cr-input" inputmode="url"
+                     aria-describedby="err-recipientLinkedin" placeholder="https://www.linkedin.com/in/..." />
+              <p class="cr-error" id="err-recipientLinkedin" hidden></p>
+            </div>
+            <div class="cr-field" data-field="recipientCompanyWebsite">
+              <label class="cr-label" for="recipientCompanyWebsite">
+                Company website URL <span class="cr-optional">optional</span>
+              </label>
+              <input type="url" id="recipientCompanyWebsite" class="cr-input" inputmode="url"
+                     aria-describedby="err-recipientCompanyWebsite" placeholder="https://company.com" />
+              <p class="cr-error" id="err-recipientCompanyWebsite" hidden></p>
+            </div>
+            <div class="cr-field" data-field="recipientTeam">
+              <label class="cr-label" for="recipientTeam">
+                Team or department <span class="cr-optional">optional</span>
+              </label>
+              <input type="text" id="recipientTeam" class="cr-input" placeholder="e.g. Platform Engineering" />
+            </div>
+          </div>
+          <div class="cr-field" data-field="recipientBackground">
+            <label class="cr-label" for="recipientBackground">
+              Recipient background notes <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="recipientBackground" class="cr-textarea" rows="3"
+                      placeholder="Only facts you have actually supplied. Nothing here is fetched automatically."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD C — CANDIDATE PROFILE ======================= -->
+      <section class="cr-card" aria-labelledby="cardCTitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardCBody" data-collapse="cardCBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-person-vcard"></i></span>
+            <span class="cr-card-title" id="cardCTitle">C &middot; Candidate Profile</span>
+            <span class="cr-badge-optional">all optional</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardCBody">
+          <div class="cr-grid-2">
+            <div class="cr-field" data-field="candidateFullName">
+              <label class="cr-label" for="candidateFullName">Candidate name <span class="cr-optional">optional</span></label>
+              <input type="text" id="candidateFullName" class="cr-input" placeholder="As it should appear in a signature" />
+            </div>
+            <div class="cr-field" data-field="candidateEmail">
+              <label class="cr-label" for="candidateEmail">Candidate email <span class="cr-optional">optional</span></label>
+              <input type="email" id="candidateEmail" class="cr-input" inputmode="email"
+                     aria-describedby="err-candidateEmail" placeholder="you@example.com" />
+              <p class="cr-error" id="err-candidateEmail" hidden></p>
+            </div>
+            <div class="cr-field" data-field="candidatePhone">
+              <label class="cr-label" for="candidatePhone">Candidate phone <span class="cr-optional">optional</span></label>
+              <input type="text" id="candidatePhone" class="cr-input" inputmode="tel" placeholder="+00 000 000 0000" />
+            </div>
+            <div class="cr-field" data-field="candidateLinkedin">
+              <label class="cr-label" for="candidateLinkedin">LinkedIn URL <span class="cr-optional">optional</span></label>
+              <input type="url" id="candidateLinkedin" class="cr-input" inputmode="url"
+                     aria-describedby="err-candidateLinkedin" placeholder="https://www.linkedin.com/in/..." />
+              <p class="cr-error" id="err-candidateLinkedin" hidden></p>
+            </div>
+            <div class="cr-field" data-field="candidatePortfolio">
+              <label class="cr-label" for="candidatePortfolio">Portfolio URL <span class="cr-optional">optional</span></label>
+              <input type="url" id="candidatePortfolio" class="cr-input" inputmode="url"
+                     aria-describedby="err-candidatePortfolio" placeholder="https://..." />
+              <p class="cr-error" id="err-candidatePortfolio" hidden></p>
+            </div>
+            <div class="cr-field" data-field="candidateGithub">
+              <label class="cr-label" for="candidateGithub">GitHub URL <span class="cr-optional">optional</span></label>
+              <input type="url" id="candidateGithub" class="cr-input" inputmode="url"
+                     aria-describedby="err-candidateGithub" placeholder="https://github.com/..." />
+              <p class="cr-error" id="err-candidateGithub" hidden></p>
+            </div>
+            <div class="cr-field" data-field="candidateLocation">
+              <label class="cr-label" for="candidateLocation">Location or target job market <span class="cr-optional">optional</span></label>
+              <input type="text" id="candidateLocation" class="cr-input" placeholder="e.g. Dubai, UAE / open to remote" />
+            </div>
+            <div class="cr-field" data-field="candidateTargetRole">
+              <label class="cr-label" for="candidateTargetRole">Target role / title <span class="cr-optional">optional</span></label>
+              <input type="text" id="candidateTargetRole" class="cr-input" placeholder="e.g. Senior Data Analyst" />
+            </div>
+          </div>
+          <div class="cr-field" data-field="candidateContext">
+            <label class="cr-label" for="candidateContext">
+              Additional achievements or context <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="candidateContext" class="cr-textarea" rows="3"
+                      placeholder="Anything the resume does not state. Do not include claims you cannot support."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD D — RESUME ======================= -->
+      <section class="cr-card" aria-labelledby="cardDTitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardDBody" data-collapse="cardDBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></span>
+            <span class="cr-card-title" id="cardDTitle">D &middot; Resume</span>
+            <span class="cr-badge-required">required</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardDBody">
+          <div class="cr-dropzone" id="resumeDropzone" data-target="resume" tabindex="0"
+               role="group" aria-label="Resume file drop zone. Press Enter to browse for a file.">
+            <div class="cr-dropzone-icon" aria-hidden="true"><i class="bi bi-cloud-arrow-up"></i></div>
+            <p class="cr-dropzone-text">
+              Drag &amp; drop a <strong>.pdf</strong>, <strong>.docx</strong> or <strong>.txt</strong> file,
+              or
+              <button type="button" class="cr-browse-btn" id="resumeBrowseBtn">browse your device</button>.
+            </p>
+            <p class="cr-dropzone-hint">Files are read in this browser tab only. Nothing is uploaded. Max 10&nbsp;MB.</p>
+          </div>
+          <input type="file" id="resumeFile" class="cr-sr-only" tabindex="-1"
+                 aria-label="Resume file, PDF, DOCX or TXT"
+                 accept=".pdf,.docx,.txt,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+
+          <div class="cr-file-row" id="resumeFileRow" hidden>
+            <span class="cr-file-chip">
+              <i class="bi bi-paperclip" aria-hidden="true"></i>
+              <span class="cr-file-name" id="resumeFileName"></span>
+              <span class="cr-file-size" id="resumeFileSize"></span>
+            </span>
+            <button type="button" class="btn cr-btn-ghost btn-sm" id="resumeRemoveBtn">Remove file</button>
+          </div>
+
+          <div class="cr-status cr-status-info" id="resumeStatus" role="status" hidden></div>
+
+          <div class="cr-field" data-field="resumeText">
+            <label class="cr-label" for="resumeText">Resume text (editable)</label>
+            <textarea id="resumeText" class="cr-textarea" rows="8" spellcheck="false"
+                      aria-describedby="resumeStatus resumeCount"
+                      placeholder="Paste your resume here, or import a document above."></textarea>
+            <p class="cr-error" id="err-resumeText" hidden></p>
+            <span class="cr-charcount" id="resumeCount">0 characters</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD E — TARGET OPPORTUNITY ======================= -->
+      <section class="cr-card" aria-labelledby="cardETitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardEBody" data-collapse="cardEBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-briefcase"></i></span>
+            <span class="cr-card-title" id="cardETitle">E &middot; Target Opportunity</span>
+            <span class="cr-badge-optional">optional</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardEBody">
+          <div class="cr-grid-2">
+            <div class="cr-field" data-field="opportunityTargetRole">
+              <label class="cr-label" for="opportunityTargetRole">Target role <span class="cr-optional">optional</span></label>
+              <input type="text" id="opportunityTargetRole" class="cr-input" placeholder="e.g. Analytics Manager" />
+            </div>
+            <div class="cr-field" data-field="opportunityJobUrl">
+              <label class="cr-label" for="opportunityJobUrl">Job posting URL <span class="cr-optional">optional</span></label>
+              <input type="url" id="opportunityJobUrl" class="cr-input" inputmode="url"
+                     aria-describedby="err-opportunityJobUrl" placeholder="https://..." />
+              <p class="cr-error" id="err-opportunityJobUrl" hidden></p>
+            </div>
+            <div class="cr-field" data-field="opportunityIndustry">
+              <label class="cr-label" for="opportunityIndustry">Industry / domain <span class="cr-optional">optional</span></label>
+              <input type="text" id="opportunityIndustry" class="cr-input" placeholder="e.g. Healthcare SaaS" />
+            </div>
+            <div class="cr-field" data-field="opportunityExperience">
+              <label class="cr-label" for="opportunityExperience">Experience level <span class="cr-optional">optional</span></label>
+              <input type="text" id="opportunityExperience" class="cr-input" placeholder="e.g. 5-7 years, mid-senior" />
+            </div>
+          </div>
+
+          <div class="cr-field" data-field="opportunityRequiredSkills">
+            <label class="cr-label" for="opportunityRequiredSkills">
+              Required skills or qualifications <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="opportunityRequiredSkills" class="cr-textarea" rows="3"
+                      placeholder="Copy the requirement list exactly as published."></textarea>
+          </div>
+
+          <div class="cr-dropzone cr-dropzone-sm" id="jobDescDropzone" data-target="jobDescription" tabindex="0"
+               role="group" aria-label="Job description file drop zone. Press Enter to browse for a file.">
+            <p class="cr-dropzone-text">
+              Import a job description &mdash; drag &amp; drop a <strong>.pdf</strong>, <strong>.docx</strong> or
+              <strong>.txt</strong> file, or
+              <button type="button" class="cr-browse-btn" id="jobDescBrowseBtn">browse your device</button>.
+            </p>
+          </div>
+          <input type="file" id="jobDescFile" class="cr-sr-only" tabindex="-1"
+                 aria-label="Job description file, PDF, DOCX or TXT"
+                 accept=".pdf,.docx,.txt,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+
+          <div class="cr-file-row" id="jobDescFileRow" hidden>
+            <span class="cr-file-chip">
+              <i class="bi bi-paperclip" aria-hidden="true"></i>
+              <span class="cr-file-name" id="jobDescFileName"></span>
+              <span class="cr-file-size" id="jobDescFileSize"></span>
+            </span>
+            <button type="button" class="btn cr-btn-ghost btn-sm" id="jobDescRemoveBtn">Remove file</button>
+          </div>
+
+          <div class="cr-status cr-status-info" id="jobDescStatus" role="status" hidden></div>
+
+          <div class="cr-field" data-field="opportunityJobDescription">
+            <label class="cr-label" for="opportunityJobDescription">
+              Job description (editable) <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="opportunityJobDescription" class="cr-textarea" rows="6" spellcheck="false"
+                      aria-describedby="jobDescStatus opportunityCount"
+                      placeholder="Paste the job description here, or import a document above."></textarea>
+            <span class="cr-charcount" id="opportunityCount">0 characters</span>
+            <p class="cr-hint">
+              Leave this empty to have the coach run a clearly labelled heuristic assessment from the target
+              title alone. It will not claim to know the real requirements.
+            </p>
+          </div>
+
+          <div class="cr-field" data-field="opportunityHiringContext">
+            <label class="cr-label" for="opportunityHiringContext">
+              Additional hiring context <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="opportunityHiringContext" class="cr-textarea" rows="2"
+                      placeholder="e.g. Role reports to the Head of Data; team of six; hybrid in Dubai."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD F — OUTREACH PREFERENCES ======================= -->
+      <section class="cr-card" aria-labelledby="cardFTitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardFBody" data-collapse="cardFBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-sliders"></i></span>
+            <span class="cr-card-title" id="cardFTitle">F &middot; Outreach Preferences</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardFBody">
+          <div class="cr-grid-2">
+            <div class="cr-field" data-field="preferencesObjective">
+              <label class="cr-label" for="preferencesObjective">Objective</label>
+              <select id="preferencesObjective" class="cr-input">
+                <option value="explore_opportunities">Explore job opportunities</option>
+                <option value="informational_interview">Informational interview</option>
+                <option value="ask_about_team_or_hiring">Ask about the appropriate team</option>
+                <option value="request_referral">Request a referral</option>
+                <option value="contact_hiring_manager">Contact a hiring manager</option>
+                <option value="request_introduction">Request an introduction</option>
+                <option value="follow_up">Follow up on previous outreach</option>
+                <option value="custom">Custom objective&hellip;</option>
+              </select>
+            </div>
+            <div class="cr-field" data-field="preferencesObjectiveCustom" hidden>
+              <label class="cr-label" for="preferencesObjectiveCustom">Describe the custom objective</label>
+              <input type="text" id="preferencesObjectiveCustom" class="cr-input"
+                     placeholder="e.g. Ask about a part-time advisory role" />
+            </div>
+            <div class="cr-field" data-field="preferencesTone">
+              <label class="cr-label" for="preferencesTone">Tone</label>
+              <select id="preferencesTone" class="cr-input">
+                <option value="professional_direct">Professional and direct</option>
+                <option value="warm_conversational">Warm and conversational</option>
+                <option value="confident_concise">Confident and concise</option>
+                <option value="formal">Formal</option>
+                <option value="custom">Custom tone&hellip;</option>
+              </select>
+            </div>
+            <div class="cr-field" data-field="preferencesToneCustom" hidden>
+              <label class="cr-label" for="preferencesToneCustom">Describe the custom tone</label>
+              <input type="text" id="preferencesToneCustom" class="cr-input"
+                     placeholder="e.g. Brisk, low-pressure, no exclamation marks" />
+            </div>
+            <div class="cr-field" data-field="preferencesLanguage">
+              <label class="cr-label" for="preferencesLanguage">Preferred language</label>
+              <input type="text" id="preferencesLanguage" class="cr-input" value="English" />
+            </div>
+            <div class="cr-field" data-field="preferencesSignOff">
+              <label class="cr-label" for="preferencesSignOff">
+                Preferred sign-off <span class="cr-optional">optional</span>
+              </label>
+              <input type="text" id="preferencesSignOff" class="cr-input" placeholder="e.g. Best regards" />
+            </div>
+          </div>
+
+          <fieldset class="cr-fieldset" id="preferencesLengthFieldset">
+            <legend class="cr-legend">Email length</legend>
+            <div class="cr-segmented" id="preferencesLength" role="radiogroup" aria-label="Email length">
+              <label class="cr-segment">
+                <input type="radio" name="preferencesLength" value="short" class="cr-sr-only" />
+                <span>Short<span class="cr-segment-sub">60&ndash;100 words</span></span>
+              </label>
+              <label class="cr-segment">
+                <input type="radio" name="preferencesLength" value="standard" class="cr-sr-only" checked />
+                <span>Standard<span class="cr-segment-sub">100&ndash;170 words</span></span>
+              </label>
+              <label class="cr-segment">
+                <input type="radio" name="preferencesLength" value="detailed" class="cr-sr-only" />
+                <span>Detailed<span class="cr-segment-sub">170&ndash;250 words</span></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="cr-grid-2">
+            <div class="cr-field" data-field="preferencesAchievements">
+              <label class="cr-label" for="preferencesAchievements">
+                Achievements to emphasize <span class="cr-optional">optional</span>
+              </label>
+              <textarea id="preferencesAchievements" class="cr-textarea" rows="2"
+                        placeholder="Only achievements already evidenced in your resume."></textarea>
+            </div>
+            <div class="cr-field" data-field="preferencesCallToAction">
+              <label class="cr-label" for="preferencesCallToAction">
+                Desired call to action <span class="cr-optional">optional</span>
+              </label>
+              <input type="text" id="preferencesCallToAction" class="cr-input"
+                     placeholder="e.g. A 15-minute call next week" />
+            </div>
+          </div>
+
+          <div class="cr-field" data-field="preferencesAvoidPhrases">
+            <label class="cr-label" for="preferencesAvoidPhrases">
+              Phrases to avoid <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="preferencesAvoidPhrases" class="cr-textarea" rows="2"
+                      placeholder="e.g. &quot;I hope this finds you well&quot;, &quot;reach out&quot;, emoji"></textarea>
+          </div>
+
+          <div class="cr-toggle-row">
+            <label class="cr-toggle" for="prefIncludeNetworking">
+              <input type="checkbox" id="prefIncludeNetworking" checked />
+              <span class="cr-toggle-track" aria-hidden="true"><span class="cr-toggle-thumb"></span></span>
+              <span class="cr-toggle-label">Include networking alternative</span>
+            </label>
+            <label class="cr-toggle" for="prefIncludeReferral">
+              <input type="checkbox" id="prefIncludeReferral" />
+              <span class="cr-toggle-track" aria-hidden="true"><span class="cr-toggle-thumb"></span></span>
+              <span class="cr-toggle-label">Include referral alternative</span>
+            </label>
+            <label class="cr-toggle" for="prefIncludeShort">
+              <input type="checkbox" id="prefIncludeShort" />
+              <span class="cr-toggle-track" aria-hidden="true"><span class="cr-toggle-thumb"></span></span>
+              <span class="cr-toggle-label">Include shorter version</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD G — RESEARCH & PERSONALIZATION ======================= -->
+      <section class="cr-card" aria-labelledby="cardGTitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardGBody" data-collapse="cardGBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-search"></i></span>
+            <span class="cr-card-title" id="cardGTitle">G &middot; Research &amp; Personalization</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardGBody">
+          <div class="cr-field" data-field="researchMode">
+            <label class="cr-label" for="researchMode">Research mode</label>
+            <select id="researchMode" class="cr-input" aria-describedby="researchModeHelp">
+              <option value="provided_information_only" selected>User-supplied information only</option>
+              <option value="research_enabled" disabled>Research-enabled mode (unavailable in this build)</option>
+            </select>
+            <p class="cr-hint" id="researchModeHelp">
+              This build has <strong>no live research integration</strong>. Everything below must be typed by
+              you, and the coach will never claim to have visited a page it did not visit.
+            </p>
+          </div>
+
+          <div class="cr-grid-2">
+            <div class="cr-field" data-field="researchRecipientProfile">
+              <label class="cr-label" for="researchRecipientProfile">
+                Recipient profile URL <span class="cr-optional">optional</span>
+              </label>
+              <input type="url" id="researchRecipientProfile" class="cr-input" inputmode="url"
+                     aria-describedby="err-researchRecipientProfile" placeholder="https://..." />
+              <p class="cr-error" id="err-researchRecipientProfile" hidden></p>
+            </div>
+            <div class="cr-field" data-field="researchCompanyWebsite">
+              <label class="cr-label" for="researchCompanyWebsite">
+                Company website <span class="cr-optional">optional</span>
+              </label>
+              <input type="url" id="researchCompanyWebsite" class="cr-input" inputmode="url"
+                     aria-describedby="err-researchCompanyWebsite" placeholder="https://..." />
+              <p class="cr-error" id="err-researchCompanyWebsite" hidden></p>
+            </div>
+          </div>
+
+          <div class="cr-field" data-field="researchInitiatives">
+            <label class="cr-label" for="researchInitiatives">
+              Known company projects or initiatives <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="researchInitiatives" class="cr-textarea" rows="2"
+                      placeholder="What you actually know, and where you learned it."></textarea>
+          </div>
+
+          <div class="cr-field" data-field="researchDevelopments">
+            <label class="cr-label" for="researchDevelopments">
+              Recent developments (supplied by you) <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="researchDevelopments" class="cr-textarea" rows="2"
+                      placeholder="e.g. Funding round announced last month — include the source you saw."></textarea>
+          </div>
+
+          <div class="cr-field" data-field="researchRelationship">
+            <label class="cr-label" for="researchRelationship">
+              Existing professional relationship or shared context <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="researchRelationship" class="cr-textarea" rows="2"
+                      placeholder="e.g. Met at the 2025 analytics meetup; former colleague of ..."></textarea>
+          </div>
+
+          <div class="cr-field" data-field="researchNotes">
+            <label class="cr-label" for="researchNotes">
+              Research notes <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="researchNotes" class="cr-textarea" rows="2"
+                      placeholder="Anything else that would make the outreach specific and honest."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CARD H — ADDITIONAL CONTEXT ======================= -->
+      <section class="cr-card" aria-labelledby="cardHTitle">
+        <h2 class="cr-card-heading">
+          <button type="button" class="cr-card-header" aria-expanded="true" aria-controls="cardHBody" data-collapse="cardHBody">
+            <span class="cr-card-icon" aria-hidden="true"><i class="bi bi-chat-square-text"></i></span>
+            <span class="cr-card-title" id="cardHTitle">H &middot; Additional Context</span>
+            <span class="cr-badge-optional">all optional</span>
+            <span class="cr-chevron open" aria-hidden="true"><i class="bi bi-chevron-down"></i></span>
+          </button>
+        </h2>
+        <div class="cr-card-body" id="cardHBody">
+          <div class="cr-field" data-field="additionalPrevious">
+            <label class="cr-label" for="additionalPrevious">
+              Previous email or correspondence <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="additionalPrevious" class="cr-textarea" rows="3"
+                      placeholder="Paste the earlier thread so a follow-up can reference it accurately."></textarea>
+          </div>
+          <div class="cr-field" data-field="additionalMotivation">
+            <label class="cr-label" for="additionalMotivation">
+              Why you want to contact this company <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="additionalMotivation" class="cr-textarea" rows="2"
+                      placeholder="Your genuine reason — the coach will not invent one."></textarea>
+          </div>
+          <div class="cr-field" data-field="additionalSellingPoint">
+            <label class="cr-label" for="additionalSellingPoint">
+              Strongest selling point <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="additionalSellingPoint" class="cr-textarea" rows="2"
+                      placeholder="Must be supported by your resume or provided context."></textarea>
+          </div>
+          <div class="cr-field" data-field="additionalResumeConcerns">
+            <label class="cr-label" for="additionalResumeConcerns">
+              Specific resume concerns <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="additionalResumeConcerns" class="cr-textarea" rows="2"
+                      placeholder="e.g. A five-year career break, a pivot into analytics."></textarea>
+          </div>
+          <div class="cr-field" data-field="additionalInstructions">
+            <label class="cr-label" for="additionalInstructions">
+              Additional instructions <span class="cr-optional">optional</span>
+            </label>
+            <textarea id="additionalInstructions" class="cr-textarea" rows="2"
+                      placeholder="Any extra constraint for the coach."></textarea>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <!-- ------------------------- OUTPUT PANEL ------------------------- -->
+    <aside class="cr-output" id="outputPanel" aria-labelledby="outputTitle">
+      <div class="cr-output-header">
+        <h2 class="cr-output-title" id="outputTitle">Generated Plugin Input</h2>
+        <span class="cr-readiness missing" id="outputReadiness" data-kind="missing">
+          <i class="bi bi-exclamation-circle" id="outputReadinessIcon" aria-hidden="true"></i>
+          <span id="outputReadinessText">Not generated</span>
+        </span>
+      </div>
+
+      <div class="cr-tabs" role="tablist" aria-label="Output format">
+        <button type="button" class="cr-tab active" role="tab" id="tab-complete" data-mode="complete"
+                aria-selected="true" aria-controls="outputText">Complete Prompt</button>
+        <button type="button" class="cr-tab" role="tab" id="tab-json" data-mode="json"
+                aria-selected="false" aria-controls="outputText" tabindex="-1">Structured JSON</button>
+        <button type="button" class="cr-tab" role="tab" id="tab-prompt" data-mode="prompt"
+                aria-selected="false" aria-controls="outputText" tabindex="-1">Plain Text</button>
+      </div>
+
+      <p class="cr-output-status" id="outputStatusText" role="status" aria-live="polite">
+        Ready when the required fields are filled in — click Generate Plugin Input.
+      </p>
+
+      <label class="cr-sr-only" for="outputText">Generated plugin input, read-only</label>
+      <textarea id="outputText" class="cr-output-textarea" readonly rows="20" spellcheck="false"
+                aria-describedby="outputStatusText outputMeta"
+                placeholder="The assembled plugin input appears here after you press Generate."></textarea>
+
+      <div class="cr-output-warn cr-status cr-status-warn" id="outputWarn" role="status" hidden></div>
+
+      <div class="cr-output-footer" id="outputMeta">
+        <span>Mode: <strong id="outputModeLabel">Complete Prompt</strong></span>
+        <span id="outputCount">0 characters</span>
+      </div>
+    </aside>
+  </main>
+
+  <!-- --------------------- VALIDATION SUMMARY --------------------- -->
+  <div class="cr-validation-summary" id="validationSummary" role="alert" hidden>
+    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+    <span id="validationSummaryText"></span>
+  </div>
+
+  <!-- --------------------- ACTION TOOLBAR --------------------- -->
+  <div class="cr-toolbar" role="toolbar" aria-label="ColdReach actions">
+    <button type="button" class="btn cr-btn-primary" id="generateBtn">
+      <i class="bi bi-stars" aria-hidden="true"></i> Generate Plugin Input
+    </button>
+    <button type="button" class="btn cr-btn-secondary" id="copyBtn">
+      <i class="bi bi-clipboard" aria-hidden="true"></i> Copy Output
+    </button>
+    <button type="button" class="btn cr-btn-secondary" id="downloadTxtBtn">
+      <i class="bi bi-download" aria-hidden="true"></i> Download TXT
+    </button>
+    <button type="button" class="btn cr-btn-secondary" id="downloadJsonBtn">
+      <i class="bi bi-filetype-json" aria-hidden="true"></i> Download JSON
+    </button>
+    <button type="button" class="btn cr-btn-ghost" id="clearOptionalBtn">
+      <i class="bi bi-eraser" aria-hidden="true"></i> Clear Optional Inputs
+    </button>
+    <button type="button" class="btn cr-btn-danger" id="resetFormBtn">
+      <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Reset Entire Form
+    </button>
+  </div>
+
+  <!-- --------------------- FOOTER --------------------- -->
+  <footer class="cr-footer">
+    <p class="cr-footer-author">
+      Built by <strong>Denzil Josteve Fernandes</strong>
+    </p>
+    <nav class="cr-footer-links" aria-label="Author links">
+      <a href="https://denziljosteve.github.io/" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-globe2" aria-hidden="true"></i> Portfolio
+      </a>
+      <a href="https://www.linkedin.com/in/denziljosteve/" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-linkedin" aria-hidden="true"></i> LinkedIn
+      </a>
+      <a href="https://github.com/denziljosteve/" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-github" aria-hidden="true"></i> GitHub
+      </a>
+    </nav>
+    <p class="cr-footer-note">
+      Frontend-only prompt builder &mdash; it does not write emails, research contacts or send anything.
+    </p>
+  </footer>
+
+  <!-- --------------------- TOAST REGION --------------------- -->
+  <div class="cr-toast-region" id="toastRegion" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- --------------------- CONFIRM DIALOG --------------------- -->
+  <div class="cr-dialog-backdrop" id="confirmBackdrop" hidden>
+    <div class="cr-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"
+         aria-describedby="confirmBody">
+      <h2 class="cr-dialog-title" id="confirmTitle">Are you sure?</h2>
+      <p class="cr-dialog-body" id="confirmBody"></p>
+      <div class="cr-dialog-actions">
+        <button type="button" class="btn cr-btn-ghost" id="confirmCancelBtn">Cancel</button>
+        <button type="button" class="btn cr-btn-danger" id="confirmOkBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ SCRIPTS ============================ -->
+  <!-- Bootstrap 5.3.3 bundle (no Bootstrap JS components are required by this app) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- PDF.js 3.4.120 (pinned) — selectable-text PDF extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <!-- Mammoth 1.6.0 (pinned) — DOCX text extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <!-- Application -->
+  <script src="app.js" defer></script>
+</body>
+</html>

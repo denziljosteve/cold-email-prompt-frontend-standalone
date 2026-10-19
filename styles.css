@@ -1,0 +1,1244 @@
+/* ==========================================================================
+   ColdReach Career Coach — styles.css
+   Dark-first, charcoal/slate with cyan accents. Bootstrap 5.3 supplies the
+   base layer (data-bs-theme handles native controls); everything below is
+   application-specific. Sections:
+     1. Tokens & themes          6. Preferences widgets
+     2. Base & accessibility     7. Output panel
+     3. Header                   8. Toolbar, footer, toast, dialog
+     4. Workspace & cards        9. Responsive
+     5. Form controls           10. Motion preferences
+   ========================================================================== */
+
+/* ---------------------------- 1. Tokens & themes --------------------------- */
+:root {
+  --cr-accent: #22d3ee;
+  --cr-accent-dim: #0e7490;
+  --cr-accent-contrast: #04212a;
+  --cr-radius: 8px;
+  --cr-radius-sm: 6px;
+  --cr-gap: 12px;
+  --cr-toolbar-h: 52px;
+  --cr-header-h: 52px;
+  --cr-footer-h: 44px;
+  --cr-danger: #f87171;
+  --cr-success: #4ade80;
+  --cr-warn: #fbbf24;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dark theme (default) — charcoal / slate */
+[data-bs-theme="dark"] {
+  --cr-bg: #0f172a;
+  --cr-bg-2: #111c33;
+  --cr-surface: #16213b;
+  --cr-surface-2: #1c2947;
+  --cr-border: #26324d;
+  --cr-border-strong: #33436b;
+  --cr-text: #e2e8f0;
+  /* Secondary and tertiary text are kept above a 4.5:1 contrast ratio on
+     every surface used in this theme (verified with Lighthouse/axe). */
+  --cr-text-dim: #c2cddc;
+  --cr-text-faint: #a0aec4;
+  --cr-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --cr-input-bg: #0c1526;
+  --cr-danger-text: #f87171;
+  --cr-success-text: #4ade80;
+  color-scheme: dark;
+}
+
+/* Light theme */
+[data-bs-theme="light"] {
+  --cr-bg: #f1f5f9;
+  --cr-bg-2: #e9eef5;
+  --cr-surface: #ffffff;
+  --cr-surface-2: #f8fafc;
+  --cr-border: #dde4ee;
+  --cr-border-strong: #c3cede;
+  --cr-text: #0f172a;
+  --cr-text-dim: #475569;
+  --cr-text-faint: #4f5c6e;
+  --cr-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --cr-input-bg: #ffffff;
+  --cr-danger-text: #b91c1c;
+  --cr-success-text: #15803d;
+  color-scheme: light;
+}
+
+/* Desktop app shell: the body is exactly one viewport tall, the header, toolbar
+   and footer are pinned layout rows, and the two columns scroll internally. */
+@media (min-width: 992px) {
+  body {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* ------------------------- 2. Base & accessibility ------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--cr-bg);
+  color: var(--cr-text);
+}
+
+/* Screen-reader-only helper. */
+.cr-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Keyboard skip link. */
+.cr-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: 8px 14px;
+  background: var(--cr-accent);
+  color: var(--cr-accent-contrast);
+  font-weight: 600;
+  border-radius: 0 0 var(--cr-radius-sm) 0;
+  text-decoration: none;
+}
+
+.cr-skip:focus {
+  left: 0;
+}
+
+.cr-noscript {
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.15);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--cr-text);
+}
+
+/* Switchable radio inputs inside the segmented control are visually hidden
+   but remain focusable, so the label styles the focus ring instead. */
+.cr-segment input.cr-sr-only:focus-visible + span {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: -2px;
+}
+
+/* ------------------------------- 3. Header -------------------------------- */
+.cr-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: var(--cr-header-h);
+  padding: 8px 16px;
+  background: var(--cr-surface);
+  border-bottom: 1px solid var(--cr-border);
+}
+
+.cr-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cr-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--cr-accent), var(--cr-accent-dim));
+  color: var(--cr-accent-contrast);
+  flex: none;
+}
+
+.cr-header-text {
+  min-width: 0;
+}
+
+.cr-header-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.cr-header-subtitle {
+  margin: 0;
+  font-size: 11px;
+  color: var(--cr-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cr-header-actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+.cr-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1px solid var(--cr-border);
+  background: var(--cr-surface-2);
+  color: var(--cr-text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.cr-icon-btn:hover {
+  color: var(--cr-text);
+  border-color: var(--cr-border-strong);
+}
+
+.cr-icon-btn:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: 1px;
+}
+
+/* --------------------------- 4. Workspace & cards -------------------------- */
+/* App shell: the workspace takes the remaining viewport height and each column
+   scrolls on its own, so the fixed action toolbar below can never overlap the
+   form or the output. */
+.cr-workspace {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 59fr) minmax(0, 41fr);
+  gap: var(--cr-gap);
+  align-items: stretch;
+  min-height: 0;
+  padding: var(--cr-gap) 16px;
+}
+
+/* The input column scrolls independently on desktop. */
+.cr-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cr-gap);
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.cr-inputs::-webkit-scrollbar,
+.cr-output-textarea::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.cr-inputs::-webkit-scrollbar-thumb,
+.cr-output-textarea::-webkit-scrollbar-thumb {
+  background: var(--cr-border-strong);
+  border-radius: 6px;
+}
+
+.cr-card {
+  /* Never let the scrolling column compress a card: shrinking would clip the
+     form controls inside it. */
+  flex: none;
+  background: var(--cr-surface);
+  border: 1px solid var(--cr-border);
+  border-radius: var(--cr-radius);
+  box-shadow: var(--cr-shadow);
+  overflow: hidden;
+}
+
+.cr-card-master {
+  border-color: var(--cr-border-strong);
+}
+
+/* The wrapping <h2> must not affect layout. */
+.cr-card-heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.cr-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--cr-surface-2);
+  border: 0;
+  border-bottom: 1px solid var(--cr-border);
+  color: var(--cr-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cr-card-header:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: -2px;
+}
+
+.cr-card-icon {
+  display: inline-flex;
+  color: var(--cr-accent);
+  flex: none;
+}
+
+.cr-card-title {
+  flex: 1;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cr-chevron {
+  color: var(--cr-text-faint);
+  flex: none;
+  transition: transform 0.15s ease;
+}
+
+.cr-chevron.open {
+  transform: rotate(180deg);
+}
+
+.cr-badge-required,
+.cr-badge-optional {
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  border: 1px solid transparent;
+}
+
+.cr-badge-required {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--cr-danger-text);
+}
+
+.cr-badge-optional {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: var(--cr-border);
+  color: var(--cr-text-faint);
+}
+
+.cr-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.cr-card-body[hidden] {
+  display: none;
+}
+
+/* ---------------------------- 5. Form controls ----------------------------- */
+.cr-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cr-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cr-text-dim);
+}
+
+.cr-req {
+  color: var(--cr-accent);
+  font-weight: 700;
+}
+
+.cr-optional {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cr-text-faint);
+}
+
+.cr-input,
+.cr-textarea,
+select.cr-input {
+  width: 100%;
+  padding: 6px 9px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--cr-text);
+  background: var(--cr-input-bg);
+  border: 1px solid var(--cr-border);
+  border-radius: var(--cr-radius-sm);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cr-textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.cr-master-textarea {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.cr-input:focus,
+.cr-textarea:focus,
+select.cr-input:focus {
+  outline: none;
+  border-color: var(--cr-accent);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.18);
+}
+
+.cr-input::placeholder,
+.cr-textarea::placeholder {
+  color: var(--cr-text-faint);
+}
+
+.cr-input:read-only,
+.cr-textarea:read-only {
+  background: var(--cr-surface-2);
+  color: var(--cr-text-dim);
+}
+
+.cr-textarea[readonly] {
+  cursor: not-allowed;
+}
+
+.cr-hint {
+  margin: 0;
+  font-size: 10.5px;
+  color: var(--cr-text-faint);
+}
+
+.cr-error {
+  margin: 0;
+  font-size: 10.5px;
+  color: var(--cr-danger-text);
+}
+
+.cr-field.has-error .cr-input,
+.cr-field.has-error .cr-textarea {
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+.cr-charcount {
+  align-self: flex-end;
+  font-size: 10px;
+  color: var(--cr-text-faint);
+}
+
+.cr-charcount.over {
+  color: var(--cr-danger-text);
+}
+
+.cr-master-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cr-master-toggles,
+.cr-master-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.cr-master-actions {
+  gap: 10px;
+}
+
+/* Toggles */
+.cr-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cr-toggle input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.cr-toggle-track {
+  position: relative;
+  width: 30px;
+  height: 17px;
+  border-radius: 999px;
+  background: var(--cr-border-strong);
+  flex: none;
+  transition: background 0.15s ease;
+}
+
+.cr-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+}
+
+.cr-toggle input:checked + .cr-toggle-track {
+  background: var(--cr-accent-dim);
+}
+
+.cr-toggle input:checked + .cr-toggle-track .cr-toggle-thumb {
+  transform: translateX(13px);
+}
+
+.cr-toggle input:focus-visible + .cr-toggle-track {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: 2px;
+}
+
+.cr-toggle input:disabled + .cr-toggle-track {
+  opacity: 0.5;
+}
+
+.cr-toggle-label {
+  font-size: 11.5px;
+  color: var(--cr-text-dim);
+}
+
+.cr-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+
+/* Drop zone */
+.cr-dropzone {
+  padding: 16px;
+  text-align: center;
+  background: var(--cr-surface-2);
+  border: 1.5px dashed var(--cr-border-strong);
+  border-radius: var(--cr-radius);
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.cr-dropzone-sm {
+  padding: 10px;
+}
+
+.cr-dropzone.dragging {
+  border-color: var(--cr-accent);
+  background: rgba(34, 211, 238, 0.07);
+}
+
+.cr-dropzone:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: 2px;
+}
+
+.cr-dropzone-icon {
+  margin-bottom: 4px;
+  font-size: 18px;
+  color: var(--cr-text-faint);
+}
+
+.cr-dropzone-text {
+  margin: 0;
+  font-size: 12px;
+  color: var(--cr-text-dim);
+}
+
+.cr-dropzone-hint {
+  margin: 4px 0 0;
+  font-size: 10.5px;
+  color: var(--cr-text-faint);
+}
+
+.cr-browse-btn {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--cr-accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cr-browse-btn:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.cr-file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cr-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 8px;
+  background: var(--cr-surface-2);
+  border: 1px solid var(--cr-border);
+  border-radius: var(--cr-radius-sm);
+  font-size: 11.5px;
+  color: var(--cr-text-dim);
+  min-width: 0;
+}
+
+.cr-file-name {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cr-file-size {
+  color: var(--cr-text-faint);
+}
+
+/* Status banners */
+.cr-status {
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--cr-radius-sm);
+  font-size: 11.5px;
+  color: var(--cr-text);
+}
+
+.cr-status[hidden] {
+  display: none;
+}
+
+.cr-status-info {
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(34, 211, 238, 0.3);
+}
+
+.cr-status-success {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.cr-status-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.32);
+}
+
+.cr-status-warn {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.32);
+}
+
+/* ------------------------ 6. Preferences widgets --------------------------- */
+.cr-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.cr-legend {
+  padding: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cr-text-dim);
+}
+
+.cr-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--cr-border);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.cr-segment {
+  position: relative;
+  flex: 1 1 0;
+  padding: 6px 11px;
+  background: var(--cr-input-bg);
+  border-right: 1px solid var(--cr-border);
+  color: var(--cr-text-dim);
+  font-size: 11.5px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.cr-segment:last-child {
+  border-right: 0;
+}
+
+.cr-segment:hover {
+  color: var(--cr-text);
+}
+
+.cr-segment:has(input:checked) {
+  background: var(--cr-accent-dim);
+  color: #eafcff;
+  font-weight: 600;
+}
+
+.cr-segment:has(input:focus-visible) {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: -2px;
+}
+
+.cr-segment > span {
+  display: block;
+}
+
+.cr-segment-sub {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+/* ---------------------------- 7. Output panel ------------------------------ */
+.cr-output {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--cr-surface);
+  border: 1px solid var(--cr-border);
+  border-radius: var(--cr-radius);
+  box-shadow: var(--cr-shadow);
+  overflow: hidden;
+}
+
+.cr-output-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--cr-surface-2);
+  border-bottom: 1px solid var(--cr-border);
+}
+
+.cr-output-title {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cr-readiness {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.cr-readiness.missing {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--cr-danger-text);
+}
+
+.cr-readiness.ready {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+
+[data-bs-theme="dark"] .cr-readiness.ready {
+  color: #fbbf24;
+}
+
+.cr-readiness.generated {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: var(--cr-success-text);
+}
+
+.cr-tabs {
+  flex: none;
+  display: flex;
+  background: var(--cr-surface-2);
+  border-bottom: 1px solid var(--cr-border);
+  overflow-x: auto;
+}
+
+.cr-tab {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--cr-text-dim);
+  font: inherit;
+  font-size: 11.5px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.cr-tab:hover {
+  color: var(--cr-text);
+}
+
+.cr-tab[aria-selected="true"] {
+  color: var(--cr-accent);
+  border-bottom-color: var(--cr-accent);
+  font-weight: 600;
+}
+
+.cr-tab:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: -2px;
+}
+
+.cr-output-status {
+  flex: none;
+  margin: 0;
+  padding: 7px 12px;
+  background: var(--cr-bg-2);
+  border-bottom: 1px solid var(--cr-border);
+  font-size: 11px;
+  color: var(--cr-text-dim);
+}
+
+.cr-output-textarea {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 110px;
+  margin: 0;
+  padding: 12px;
+  resize: none;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--cr-text);
+  background: var(--cr-input-bg);
+  border: 0;
+  border-radius: 0;
+}
+
+.cr-output-textarea:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: -2px;
+}
+
+.cr-output-warn {
+  flex: none;
+  margin: 0 12px 10px;
+}
+
+.cr-output-footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 12px;
+  background: var(--cr-surface-2);
+  border-top: 1px solid var(--cr-border);
+  font-size: 10.5px;
+  color: var(--cr-text-faint);
+}
+
+/* Validation summary strip under the workspace */
+.cr-validation-summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 16px 8px;
+  padding: 7px 11px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--cr-radius-sm);
+  font-size: 11.5px;
+  color: var(--cr-text);
+}
+
+.cr-validation-summary[hidden] {
+  display: none;
+}
+
+/* ------------------- 8. Toolbar, footer, toast, dialog -------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, opacity 0.12s ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--cr-accent);
+  outline-offset: 1px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  padding: 3px 9px;
+  font-size: 11px;
+}
+
+.cr-btn-primary {
+  background: var(--cr-accent-dim);
+  color: #eafcff;
+}
+
+.cr-btn-primary:hover:not(:disabled) {
+  background: var(--cr-accent);
+  color: var(--cr-accent-contrast);
+}
+
+.cr-btn-secondary {
+  background: var(--cr-surface-2);
+  border-color: var(--cr-border-strong);
+  color: var(--cr-text);
+}
+
+.cr-btn-secondary:hover:not(:disabled) {
+  border-color: var(--cr-accent);
+}
+
+.cr-btn-ghost {
+  background: transparent;
+  border-color: var(--cr-border);
+  color: var(--cr-text-dim);
+}
+
+.cr-btn-ghost:hover:not(:disabled) {
+  border-color: var(--cr-border-strong);
+  color: var(--cr-text);
+}
+
+.cr-btn-danger {
+  background: transparent;
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--cr-danger-text);
+}
+
+.cr-btn-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* Fixed bottom action toolbar: a real layout row, always visible, and never
+   overlapping the form or the output. */
+.cr-toolbar {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 9px 16px;
+  background: var(--cr-surface);
+  border-top: 1px solid var(--cr-border);
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.cr-validation-summary,
+.cr-footer {
+  flex: none;
+}
+
+.cr-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding: 10px 16px 14px;
+  background: var(--cr-bg-2);
+  border-top: 1px solid var(--cr-border);
+  font-size: 11px;
+  color: var(--cr-text-faint);
+}
+
+.cr-footer p {
+  margin: 0;
+}
+
+.cr-footer-author strong {
+  color: var(--cr-accent);
+}
+
+.cr-footer-links {
+  display: flex;
+  gap: 14px;
+}
+
+.cr-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--cr-accent);
+  text-decoration: none;
+}
+
+.cr-footer-links a:hover {
+  text-decoration: underline;
+}
+
+.cr-footer-note {
+  flex-basis: 100%;
+  font-size: 10.5px;
+  color: var(--cr-text-faint);
+}
+
+/* Toasts */
+.cr-toast-region {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--cr-toolbar-h) + 16px);
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.cr-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 9px 12px;
+  background: var(--cr-surface);
+  border: 1px solid var(--cr-border-strong);
+  border-radius: var(--cr-radius);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  color: var(--cr-text);
+  pointer-events: auto;
+}
+
+.cr-toast-success {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.cr-toast-success i {
+  color: var(--cr-success-text);
+}
+
+.cr-toast-error {
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.cr-toast-error i {
+  color: var(--cr-danger-text);
+}
+
+.cr-toast-info i {
+  color: var(--cr-accent);
+}
+
+.cr-toast-close {
+  margin-left: auto;
+  padding: 0 2px;
+  background: transparent;
+  border: 0;
+  color: var(--cr-text-faint);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cr-toast-close:hover {
+  color: var(--cr-text);
+}
+
+/* Confirmation dialog (custom, no native confirm()) */
+.cr-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(2, 6, 23, 0.6);
+}
+
+.cr-dialog-backdrop[hidden] {
+  display: none;
+}
+
+.cr-dialog {
+  width: 100%;
+  max-width: 430px;
+  padding: 18px;
+  background: var(--cr-surface);
+  border: 1px solid var(--cr-border-strong);
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+.cr-dialog-title {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.cr-dialog-body {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  color: var(--cr-text-dim);
+  white-space: pre-line;
+}
+
+.cr-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ------------------------------ 9. Responsive ------------------------------ */
+@media (max-width: 991.98px) {
+  /* Natural page flow: the page scrolls as a whole and the action area sits at
+     the end of the content rather than covering it. */
+  .cr-workspace {
+    grid-template-columns: 1fr;
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .cr-inputs {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+
+  .cr-output {
+    height: auto;
+    min-height: 0;
+  }
+
+  .cr-output-textarea {
+    flex: none;
+    min-height: 300px;
+    max-height: 60vh;
+    resize: vertical;
+  }
+
+  .cr-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .cr-header-subtitle {
+    display: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .cr-header {
+    padding: 8px 12px;
+  }
+
+  .cr-workspace {
+    padding: 10px 12px;
+  }
+
+  .cr-validation-summary {
+    margin: 0 12px 8px;
+  }
+
+  /* Compact, wrap-friendly action area instead of a full-width bar. */
+  .cr-toolbar {
+    justify-content: stretch;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .cr-toolbar .btn {
+    flex: 1 1 calc(50% - 6px);
+    padding: 8px 10px;
+    font-size: 11.5px;
+  }
+
+  .cr-file-name {
+    max-width: 150px;
+  }
+
+  .cr-footer {
+    padding: 10px 12px 14px;
+  }
+}
+
+/* ------------------------- 10. Motion preferences -------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
