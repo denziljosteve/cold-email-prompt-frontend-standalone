@@ -160,12 +160,21 @@ These are honest gaps, not claims:
 
 ## 6. Deployment status
 
-**Not deployed. Nothing has been published anywhere.**
+**The source is published. The application is NOT deployed.**
+
+| | |
+|---|---|
+| Repository | `https://github.com/denziljosteve/cold-email-prompt-frontend-standalone` (public) |
+| Branch / commit | `main` at `19810c0` |
+| Host serving the app | **none** — GitHub Pages is not enabled, no CDN, no domain |
+| CI / monitoring / analytics | none |
+
+Publishing the source to a public repository is not a deployment: nobody can open
+the application at a URL, because no host serves it. It still has to be opened
+from disk or served from a static host of your choosing.
 
 Full detail and the concrete options are in `deploy.md` and
-`PRODUCTIONDEPLOY.md`. No hosting, no CI, no domain, no analytics, no
-monitoring. The application is a static folder that can be opened from disk or
-served from any static host.
+`PRODUCTIONDEPLOY.md`. No hosting, no CI, no domain, no analytics, no monitoring.
 
 ## 7. Outstanding tasks, prioritised
 

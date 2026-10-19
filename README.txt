@@ -417,6 +417,7 @@ Not verified by automation (documented in PROGRESS.md as outstanding):
 ================================================================================
 Built by Denzil Josteve Fernandes
 
+  Repository: https://github.com/denziljosteve/cold-email-prompt-frontend-standalone
   Portfolio : https://denziljosteve.github.io/
   LinkedIn  : https://www.linkedin.com/in/denziljosteve/
   GitHub    : https://github.com/denziljosteve/

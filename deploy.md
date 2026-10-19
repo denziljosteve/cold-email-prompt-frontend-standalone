@@ -104,20 +104,34 @@ has been performed.
 
 ### Recommended: GitHub Pages
 
+The repository has already been created and pushed (see the note below), so only
+the Pages step remains:
+
 ```powershell
-cd D:\repos\coldEmailFrontEnd_Standalone
-git init
-git add index.html styles.css app.js README.txt LOG.md PROGRESS.md decision.md flow.md deploy.md PRODUCTIONDEPLOY.md
-git commit -m "ColdReach Career Coach: standalone frontend-only prompt builder"
-git branch -M main
-git remote add origin https://github.com/denziljosteve/coldreach-career-coach.git
-git push -u origin main
-# then: repo Settings → Pages → Source: Deploy from a branch → main / (root)
+# already done:
+#   cd D:\repos\coldEmailFrontEnd_Standalone
+#   git init
+#   git add .            # 10 files: 4 app + 6 dev docs
+#   git commit -m "ColdReach Career Coach: standalone frontend-only prompt builder"
+#   git branch -M main
+#   git remote add origin https://github.com/denziljosteve/cold-email-prompt-frontend-standalone.git
+#   git push -u origin main
+
+# still to do — enable Pages:
+#   repo Settings → Pages → Source: "Deploy from a branch" → main / (root)
 ```
 
-> **Note:** `D:\repos\coldEmailFrontEnd_Standalone` is currently **not** a git
-> repository and no commit has been made. The commands above are a plan, not a
-> record.
+> **Note:** the working directory **is** now a git repository with one commit
+> (`19810c0`), pushed to
+> `https://github.com/denziljosteve/cold-email-prompt-frontend-standalone`
+> on branch `main`. The repository is **public source code only** — GitHub Pages
+> is **not** enabled, and the application is therefore still **not deployed**.
+> No file has been served from a web host.
+
+> **If Pages is enabled later**, the app would be served at
+> `https://denziljosteve.github.io/cold-email-prompt-frontend-standalone/` — note
+> the subpath. The app uses only relative asset paths, so it works from a
+> subpath without changes. Re-run the post-deployment smoke test (§5) afterwards.
 
 ---
 

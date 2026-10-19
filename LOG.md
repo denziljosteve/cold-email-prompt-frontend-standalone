@@ -126,6 +126,19 @@ Nothing was deployed.
 | 14:07 | **Documentation verified against the code, and three further inaccuracies corrected.** (a) Theming uses `data-bs-theme` on `<html>` (Bootstrap 5.3's colour-mode attribute), not `data-theme` on `<body>`; `flow.md` was corrected, and it now also records that the theme is written to `localStorage` only on toggle, not on first load. (b) The documented `appState` shape was invented rather than read; it was replaced with the real object from `app.js` line 102. (c) Validation runs on Generate, not live — typing only clears that field's error — so the README and the journey diagram were corrected. Additionally, the documented JSON structure was confirmed field-by-field against `buildJson()` output. |
 | 14:08 | Stopped all seven local static servers (ports 8137–8143). |
 
+## Phase 8 — Version control and publishing the source (14:09–14:20)
+
+| Time  | Event |
+|-------|-------|
+| 14:09 | Confirmed the environment: git 2.54.0.windows.1, author identity configured (`Denzil Josteve Fernandes`, `denziljosteve@gmail.com`). |
+| 14:10 | `git init` in `D:\repos\coldEmailFrontEnd_Standalone`; staged all 10 files (4 application files + 6 development docs). |
+| 14:11 | Root commit `19810c0` — "ColdReach Career Coach: standalone frontend-only prompt builder" — 10 files, 6,174 insertions. |
+| 14:12 | Added remote `origin` = `https://github.com/denziljosteve/cold-email-prompt-frontend-standalone.git`; renamed the branch to `main`. |
+| 14:12 | Verified the remote was reachable and empty (`git ls-remote --heads origin` → no refs, exit 0; credentials supplied by the configured Git Credential Manager). |
+| 14:12 | `git push -u origin main` succeeded: `* [new branch] main -> main`, and `git ls-remote --heads origin` now reports `19810c0… refs/heads/main`. |
+| 14:13 | **Corrected the documentation, which had been written before the repository existed.** `deploy.md` (the "not a git repository" note and the GitHub Pages command block), `PRODUCTIONDEPLOY.md` (go-live checklist item 7, now DONE) and this log were all updated to state that the source is published while the *application* remains undeployed. |
+| 14:13 | Confirmed GitHub Pages is **not** enabled, so the application is still not served from any host. Noted the subpath URL that Pages would use, and that the app's relative asset paths would work from it unchanged. |
+
 ---
 
 ## Defects found and fixed in this session
@@ -150,8 +163,8 @@ Nothing was deployed.
 - No OCR; image-only PDFs are rejected with an explanation.
 - No `beforeunload` warning (implemented, then removed for predictability — see `decision.md` D16).
 - No `localStorage` of anything except the theme.
-- No commit: the working directory is not a git repository.
-- No deployment. See `deploy.md` and `PRODUCTIONDEPLOY.md`.
+- No deployment. The source is published to a public GitHub repository, but no
+  host serves the application. See `deploy.md` and `PRODUCTIONDEPLOY.md`.
 - No screenshot evidence (the screenshot tool required a visible desktop window).
 
 ## Known gaps carried forward

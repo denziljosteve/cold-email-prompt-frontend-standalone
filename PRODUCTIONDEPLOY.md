@@ -371,7 +371,7 @@ today so the gap is unambiguous.
 | 4 | Vendor the dependencies and remove the Bootstrap JS bundle | ⛔ NOT DONE |
 | 5 | Or: add SRI to every remaining CDN asset (self-host the font for full coverage) | ⛔ NOT DONE |
 | 6 | Pick a host and create the project (recommended: GitHub Pages) | ⛔ NOT DONE |
-| 7 | `git init`, first commit, push (the directory is **not** a git repo today) | ⛔ NOT DONE |
+| 7 | `git init`, first commit, push | ✅ DONE — repo `denziljosteve/cold-email-prompt-frontend-standalone`, branch `main`, commit `19810c0` |
 | 8 | Enable HTTPS (automatic on GitHub Pages / Cloudflare / Netlify) | ⛔ NOT DONE |
 | 9 | Configure security headers, including CSP (§5, §6) | ⛔ NOT DONE |
 | 10 | Set cache headers / asset versioning (§7) | ⛔ NOT DONE |
