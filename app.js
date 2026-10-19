@@ -7,7 +7,7 @@
 
    Privacy: personal data and document contents live in page memory only.
    The single exception is the theme choice, stored under
-   localStorage["coldreach.theme"]. See README.txt and flow.md.
+   localStorage["coldreach.theme"]. See README.md and flow.md.
 
    Architecture: one IIFE, no globals leaked to `window` except nothing.
    Dependencies are read from the pinned CDN globals `pdfjsLib` (PDF.js

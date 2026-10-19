@@ -72,7 +72,7 @@ coldreach/
   ├─ index.html
   ├─ styles.css
   ├─ app.js
-  ├─ README.txt
+  ├─ README.md
   ├─ vendor/
   │   ├─ bootstrap/   bootstrap.min.css, bootstrap.bundle.min.js
   │   ├─ bootstrap-icons/  bootstrap-icons.min.css, fonts/*.woff2
@@ -391,7 +391,7 @@ Release:        ColdReach Career Coach v1.0.0
 Date:           YYYY-MM-DD
 URL:            https://…
 Commit:         <sha>
-Files:          index.html styles.css app.js README.txt (+ vendor/)
+Files:          index.html styles.css app.js README.md (+ vendor/)
 Dependencies:   Bootstrap 5.3.3 (self-hosted)
                 Bootstrap Icons 1.11.3 (self-hosted)
                 PDF.js 3.4.120 (self-hosted, worker matched)

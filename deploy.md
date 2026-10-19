@@ -19,7 +19,7 @@ coldreach/
   ├─ index.html     789 lines
   ├─ styles.css   1,749 lines
   ├─ app.js       2,094 lines
-  └─ README.txt  (documentation)
+  └─ README.md   (documentation)
 ```
 
 That is the whole thing. There is:

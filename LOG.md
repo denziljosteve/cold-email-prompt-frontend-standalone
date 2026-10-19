@@ -173,6 +173,17 @@ it is not deployed.
 
 ---
 
+## Phase 11 — README converted to Markdown
+
+| Step | Event |
+|------|-------|
+| 1 | Renamed `README.txt` (428 lines of plain text with `====` rules) to `README.md` and rewrote it with Markdown headings, tables, fenced code blocks and a linked table of contents. |
+| 2 | Preserved the content: every section, caveat and verification claim carried over. Nothing was added to the "confirmed working" list. |
+| 3 | Updated the four-file inventory and every live cross-reference (`app.js` header comment, `deploy.md`, `PROGRESS.md`, `PRODUCTIONDEPLOY.md`). The historical entries above keep the old name because they record what was true at the time. |
+| 4 | No application behaviour changed (only a comment in `app.js`), so the Phase 10 build and Lighthouse evidence remains valid. |
+
+---
+
 ## Defects found and fixed across both sessions
 
 | # | Defect | Found by | Fix |

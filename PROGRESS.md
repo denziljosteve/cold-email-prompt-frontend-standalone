@@ -27,7 +27,7 @@ not call an AI API, does not research anyone, and does not send anything.
 | 1 | `index.html` | ✅ Done | 789 lines; 8 cards, required-field progress card, output panel with empty state, 6-button toolbar, dialog, toast region, footer, pinned CDNs. |
 | 2 | `styles.css` | ✅ Done | 1,749 lines; token set, dark + light themes, app shell, responsive breakpoints. |
 | 3 | `app.js` | ✅ Done | 2,094 lines; 19 sections, 80 functions, single IIFE, no global leakage except the test namespace. |
-| 4 | `README.txt` | ✅ Done | Usage, cards, output format, privacy, dependencies, troubleshooting, verification summary. |
+| 4 | `README.md` | ✅ Done | Usage, cards, output format, privacy, dependencies, troubleshooting, verification summary. |
 | 5 | Six development docs | ✅ Done | `LOG.md`, `PROGRESS.md`, `decision.md`, `flow.md`, `deploy.md`, `PRODUCTIONDEPLOY.md`. |
 
 All four application files live together in `D:\repos\coldEmailFrontEnd_Standalone`.
